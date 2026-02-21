@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard AI | Next-Gen Email Defense</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #020617;
+            --accent-cyan: #22d3ee;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f8fafc;
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(34, 211, 238, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .hero-glow {
+            box-shadow: 0 0 100px rgba(34, 211, 238, 0.1);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-6 lg:p-12 overflow-x-hidden">
+    <div class="max-w-5xl w-full flex flex-col items-center text-center space-y-12 relative">
+        <!-- Floating Elements -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] -z-10">
+        </div>
+
+        <div class="space-y-6">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold tracking-[0.2em] uppercase animate-pulse">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                System_Status::Active
+            </div>
+
+            <h1 class="text-6xl md:text-7xl font-black tracking-tighter leading-none">
+                <span class="bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-500">Secure Your Inbox
+                    With</span><br>
+                <span class="text-cyan-400">PhishGuard AI</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed">
+                Connect your Gmail to our advanced Forensic Laboratory.
+                Experience near real-time automated threat suppression powered by Random Forest ML.
+            </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 w-full max-w-md">
+            <a href="/login"
+                class="group flex items-center gap-4 px-10 py-5 bg-cyan-500 text-slate-950 rounded-2xl font-black transition-all hover:bg-cyan-400 shadow-2xl shadow-cyan-500/20 active:scale-95 w-full sm:w-auto">
+                <svg class="w-6 h-6 group-hover:rotate-12 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12.48 10.92v3.28h7.84c-.24 1.84-.9 3.22-2.3 4.62C16.12 20.12 14.12 21 11.2 21c-4.4 0-8-3.6-8-8s3.6-8 8-8c2.4 0 4.2.8 5.6 2.2l2.4-2.4C17.2 2.8 14.6 2 11.2 2c-6 0-11 5-11 11s5 11 11 11c3.2 0 5.8-1 7.8-3 2.2-2.2 3.2-5.2 3.2-8.2 0-.6 0-1.2-.2-1.8h-11.2z" />
+                </svg>
+                Establish Secure Link
+            </a>
+            <a href="#features"
+                class="px-10 py-5 glass-panel rounded-2xl font-bold bg-white/5 hover:bg-white/10 transition-all border border-white/10 w-full sm:w-auto">
+                Intel_Briefing
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+            <div class="p-8 glass-panel rounded-3xl text-left space-y-4 hover:border-cyan-500/30 transition-all group">
+                <div
+                    class="w-12 h-12 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-black">Forensic AI</h3>
+                <p class="text-slate-500 text-sm font-medium leading-relaxed">Advanced NLP and Random Forest processing
+                    identifies credential harvesting and BEC threats instantly.</p>
+            </div>
+
+            <div class="p-8 glass-panel rounded-3xl text-left space-y-4 hover:border-cyan-500/30 transition-all group">
+                <div
+                    class="w-12 h-12 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-black">Cyber Vault</h3>
+                <p class="text-slate-500 text-sm font-medium leading-relaxed">Isolated sandbox environment to safely
+                    inspect detected threats with all interactive elements deactivated.</p>
+            </div>
+
+            <div class="p-8 glass-panel rounded-3xl text-left space-y-4 hover:border-cyan-500/30 transition-all group">
+                <div
+                    class="w-12 h-12 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-black">AI Assistant</h3>
+                <p class="text-slate-500 text-sm font-medium leading-relaxed">Interact with PhishGuard AI directly for
+                    forensic interpretations and real-time security scoring.</p>
+            </div>
+        </div>
+
+        <footer class="text-slate-600 font-mono text-[10px] uppercase tracking-[0.4em] pt-12">
+            Secure_Communication_Protocol :: v2.6.4_LTS
+        </footer>
+    </div>
+</body>
+
+</html>

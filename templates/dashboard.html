@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard AI | Advanced Defense</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #020617;
+            --accent-cyan: #22d3ee;
+            --accent-crimson: #ef4444;
+            --glass: rgba(15, 23, 42, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f8fafc;
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(34, 211, 238, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
+        }
+
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .neon-border-cyan {
+            border-color: rgba(34, 211, 238, 0.3);
+        }
+
+        .neon-border-red {
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .threat-content {
+            pointer-events: none;
+            user-select: text;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .animate-pulse-slow {
+            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .scroll-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen overflow-x-hidden">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 border-r border-slate-800/50 h-screen sticky top-0 p-6 space-y-8 glass-panel z-20">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <span
+                    class="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">PhishGuard
+                    <span class="text-cyan-400 text-xs font-mono ml-1">v2.6</span></span>
+            </div>
+
+            <nav class="space-y-1">
+                <a href="/dashboard"
+                    class="flex items-center gap-3 p-3 bg-cyan-500/10 text-cyan-400 rounded-xl font-medium border border-cyan-500/20 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="/logs"
+                    class="flex items-center gap-3 p-3 text-slate-400 hover:bg-slate-800/50 rounded-xl transition-all group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:text-cyan-400 transition-colors"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    Security Logs
+                </a>
+                <a href="/logout"
+                    class="flex items-center gap-3 p-3 text-slate-400 hover:bg-red-500/10 hover:text-red-400 rounded-xl transition-all group mt-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:text-red-400 transition-colors"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Terminate Session
+                </a>
+            </nav>
+
+            <div class="absolute bottom-10 left-6 right-6 p-4 rounded-2xl bg-slate-900/50 border border-slate-800">
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-2">System Status</p>
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    <span class="text-xs font-medium text-slate-300">Defense Active</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8 lg:p-12">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                <div>
+                    <h1 class="text-4xl font-extrabold tracking-tight">Security Command</h1>
+                    <p class="text-slate-400 mt-2 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.5)]"></span>
+                        Encrypted session: <span class="text-slate-200 font-mono text-sm">{{ session['user_email']
+                            }}</span>
+                    </p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="autoScanBtn"
+                        class="px-5 py-2.5 rounded-xl text-sm font-bold transition-all border flex items-center gap-2 {{ 'border-cyan-500 text-cyan-400 bg-cyan-500/5' if stats.get('auto_scan') else 'border-slate-700 text-slate-400' }}">
+                        <div
+                            class="w-2 h-2 rounded-full {{ 'bg-cyan-400' if stats.get('auto_scan') else 'bg-slate-600' }}">
+                        </div>
+                        Auto-Scan: {{ 'ON' if stats.get('auto_scan') else 'OFF' }}
+                    </button>
+                    <button id="scanBtn"
+                        class="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-xl font-bold transition-all shadow-xl shadow-cyan-500/20 active:scale-95">Initiate
+                        Sweep</button>
+                </div>
+            </header>
+
+            <!-- Top Intelligence Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+                <!-- Safety Gauge -->
+                <div class="lg:col-span-1 p-8 glass-panel rounded-3xl relative overflow-hidden group">
+                    <div class="relative z-10 flex flex-col items-center">
+                        <h3 class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-6">Inbox Safety Index
+                        </h3>
+                        <div class="relative w-48 h-48 flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <circle cx="96" cy="96" r="80" stroke="currentColor" stroke-width="12"
+                                    fill="transparent" class="text-slate-800/50"></circle>
+                                <circle cx="96" cy="96" r="80" stroke="currentColor" stroke-width="12"
+                                    fill="transparent" stroke-dasharray="502.6"
+                                    stroke-dashoffset="{{ 502.6 - (502.6 * stats.get('safety_score', 100) / 100) }}"
+                                    class="{{ 'text-cyan-400' if stats.safety_score > 70 else 'text-red-500' if stats.safety_score < 40 else 'text-yellow-400' }} transition-all duration-1000 ease-out">
+                                </circle>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span class="text-5xl font-black tracking-tighter">{{ stats.get('safety_score', 100)
+                                    }}<span class="text-xl">%</span></span>
+                                <span
+                                    class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Secure</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -right-10 -bottom-10 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-48 w-48" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="lg:col-span-2 grid grid-cols-2 gap-6">
+                    <div class="p-8 glass-panel rounded-3xl hover:neon-border-cyan transition-all group">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-slate-900 rounded-2xl group-hover:text-cyan-400 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                </svg>
+                            </div>
+                            <span class="text-xs font-mono text-slate-500 tracking-tighter">STAT::TOTAL</span>
+                        </div>
+                        <p class="text-4xl font-black">{{ stats['total'] }}</p>
+                        <p class="text-slate-500 text-xs font-bold uppercase mt-2 tracking-widest">Total Monitored</p>
+                    </div>
+                    <div
+                        class="p-8 glass-panel rounded-3xl hover:neon-border-red transition-all group border-red-500/10 bg-red-500/[0.02]">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-slate-900 rounded-2xl text-red-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <span class="text-xs font-mono text-red-500/50 tracking-tighter">STAT::THREATS</span>
+                        </div>
+                        <p class="text-4xl font-black text-red-500">{{ stats['phishing'] }}</p>
+                        <p class="text-red-500/50 text-xs font-bold uppercase mt-2 tracking-widest">Breaches Blocked</p>
+                    </div>
+                    <div class="p-8 glass-panel rounded-3xl hover:neon-border-cyan transition-all group col-span-2">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Threat
+                                    Penetration Rate</h4>
+                                <p class="text-2xl font-black text-cyan-400">{{ stats['threat_rate'] }}%</p>
+                            </div>
+                            <div class="w-2/3 h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-cyan-400 transition-all duration-1000 shadow-[0_0_12px_rgba(34,211,238,0.5)]"
+                                    style="width: {{ stats['threat_rate'] }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis & Vault Grid -->
+            <div class="grid grid-cols-1 xl:grid-cols-5 gap-10">
+                <!-- Forensic Laboratory (Manual Check) -->
+                <div class="xl:col-span-2 space-y-8">
+                    <div class="p-8 glass-panel rounded-3xl neon-border-cyan border-opacity-50">
+                        <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center text-cyan-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            Forensic Lab
+                        </h2>
+                        <div class="space-y-4">
+                            <textarea id="emailText"
+                                class="w-full h-40 bg-slate-900/80 border border-slate-700 rounded-2xl p-4 text-sm font-mono text-slate-300 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all placeholder:text-slate-700"
+                                placeholder="PASTE_RAW_CONTENT_FOR_ANALYSIS..."></textarea>
+                            <button id="checkBtn"
+                                class="w-full py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-2xl font-bold transition-all text-cyan-400 tracking-widest uppercase text-xs">Analyze
+                                Artifact</button>
+                            <div id="checkResult"
+                                class="hidden p-5 rounded-2xl font-mono text-xs border border-dashed transition-all animate-pulse-slow">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cyber Vault (Threat Sandbox) -->
+                    {% if threats %}
+                    <div class="p-8 glass-panel rounded-3xl border-red-500/20">
+                        <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                            <div class="w-8 h-8 bg-red-500/20 rounded-lg flex items-center justify-center text-red-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            The Vault <span class="text-[10px] text-red-400 font-mono ml-auto">PHISH::HISTORY</span>
+                        </h2>
+                        <div class="space-y-4 max-h-[500px] overflow-y-auto pr-2 scroll-hide">
+                            {% for threat in threats %}
+                            <div
+                                class="p-4 bg-slate-950/40 border border-red-500/10 rounded-2xl group transition-all hover:bg-red-500/[0.05]">
+                                <div class="flex justify-between items-center mb-3">
+                                    <div class="w-2/3">
+                                        <p class="text-sm font-bold truncate text-red-400/80">{{ threat.subject or
+                                            "HIDDEN_PAYLOAD" }}</p>
+                                        <p class="text-[10px] text-slate-600 font-mono truncate uppercase">{{
+                                            threat.sender }}</p>
+                                    </div>
+                                    <div class="bg-red-500/20 px-2 py-1 rounded-md">
+                                        <span class="text-[10px] font-black text-red-500">{{ threat.confidence
+                                            }}%</span>
+                                    </div>
+                                </div>
+                                <div
+                                    class="threat-content p-3 bg-black/40 rounded-xl text-[10px] leading-relaxed text-slate-500 border border-slate-800/20">
+                                    {{ threat.body[:300] }}{{ '...' if threat.body|length > 300 }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Intelligence Log (Recent Logs) -->
+                <div class="xl:col-span-3">
+                    <div class="glass-panel rounded-3xl overflow-hidden border-slate-800/50">
+                        <div class="p-8 border-b border-white/5 flex justify-between items-center bg-slate-900/20">
+                            <div>
+                                <h2 class="text-xl font-bold tracking-tight">Intelligence Stream</h2>
+                                <p class="text-[10px] text-slate-500 font-mono mt-1 tracking-widest uppercase">
+                                    Live_Analysis_Feed</p>
+                            </div>
+                            <a href="/logs"
+                                class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold text-slate-300 transition-all border border-slate-700">Full
+                                Archive</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-slate-950/40 text-[10px] text-slate-500 uppercase tracking-[0.2em]">
+                                    <tr>
+                                        <th class="px-8 py-5">Intel_Type</th>
+                                        <th class="px-6 py-5">Source</th>
+                                        <th class="px-6 py-5">Subject</th>
+                                        <th class="px-6 py-5 text-right">Confidence</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/5">
+                                    {% for log in logs %}
+                                    <tr class="hover:bg-slate-800/30 transition-all group">
+                                        <td class="px-8 py-6">
+                                            <span class="flex items-center gap-2">
+                                                <span
+                                                    class="w-1.5 h-1.5 rounded-full {{ 'bg-red-500' if log.prediction == 'phishing' else 'bg-cyan-500' }} group-hover:scale-150 transition-transform"></span>
+                                                <span
+                                                    class="text-xs font-black tracking-tight {{ 'text-red-400' if log.prediction == 'phishing' else 'text-cyan-400' }}">
+                                                    {{ log.prediction|upper }}
+                                                </span>
+                                            </span>
+                                        </td>
+                                        <td
+                                            class="px-6 py-6 font-mono text-[10px] text-slate-400 max-w-[120px] truncate">
+                                            {{ log.sender }}</td>
+                                        <td
+                                            class="px-6 py-6 text-sm text-slate-300 max-w-[200px] truncate tracking-tight">
+                                            {{ log.subject }}</td>
+                                        <td
+                                            class="px-6 py-6 text-right font-mono text-xs {{ 'text-red-500/80' if log.prediction == 'phishing' else 'text-slate-500' }}">
+                                            {{ log.confidence }}%
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Security Assistant - Floating Chat -->
+    <div id="aiChat"
+        class="fixed right-8 bottom-8 z-50 transition-all duration-500 translate-y-2 translate-x-1 hover:translate-x-0 hover:translate-y-0">
+        <div id="chatContent"
+            class="hidden flex-col w-96 h-[500px] glass-panel rounded-3xl shadow-2xl overflow-hidden border-cyan-500/30 mb-4 animate-in slide-in-from-bottom flex cursor-default">
+            <div class="p-6 bg-gradient-to-r from-cyan-900/40 to-slate-900 border-b border-cyan-500/20">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <div
+                            class="w-10 h-10 bg-cyan-500 rounded-2xl flex items-center justify-center text-slate-950 font-bold">
+                            PG
+                        </div>
+                        <div
+                            class="absolute -right-1 -bottom-1 w-3 h-3 bg-green-500 rounded-full border-2 border-slate-950">
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-black text-sm text-white">PhishGuard AI</h4>
+                        <p class="text-[10px] text-cyan-400 font-mono tracking-widest uppercase">Assistant_v2.6_Active
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-4 scroll-hide bg-slate-950/30">
+                <div
+                    class="bg-slate-900/80 p-4 rounded-2xl rounded-tl-none border border-slate-800 text-xs text-slate-300 max-w-[85%] leading-relaxed">
+                    Hello! I'm PhishGuard AI. I use forensic ML to secure your communications. How can I assist your
+                    defense today? 🛡️
+                </div>
+            </div>
+            <div class="p-4 bg-slate-900/50 border-t border-slate-800">
+                <div class="flex items-center gap-2">
+                    <input type="text" id="chatInput"
+                        class="flex-1 bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-cyan-500 text-white placeholder:text-slate-700"
+                        placeholder="Ask PhishGuard AI...">
+                    <button id="sendChat"
+                        class="p-2 bg-cyan-500 rounded-xl text-slate-950 transition-transform active:scale-90 shadow-lg shadow-cyan-500/20">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path
+                                d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <button id="toggleChat"
+            class="w-16 h-16 bg-cyan-500 rounded-3xl flex items-center justify-center text-slate-950 shadow-2xl shadow-cyan-500/30 transition-all hover:scale-110 active:scale-95 group float-right">
+            <svg id="chatIcon" xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        // Core Dashboard Functions
+        document.getElementById('autoScanBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('autoScanBtn');
+            btn.disabled = true;
+            try {
+                const res = await fetch('/toggle-auto-scan', { method: 'POST' });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    location.reload();
+                }
+            } catch (e) {
+                alert('Connection Breach: Toggle Failed');
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('scanBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('scanBtn');
+            btn.disabled = true;
+            btn.innerText = 'SWEEPING...';
+            try {
+                const res = await fetch('/scan', { method: 'POST' });
+                const data = await res.json();
+                alert(`Intelligence Sweep Complete\nCaptured: ${data.phishing} threats\nProcessed: ${data.scanned} packages`);
+                location.reload();
+            } catch (e) {
+                alert('Sweep Interrupted: ' + e);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Initiate Sweep';
+            }
+        });
+
+        document.getElementById('checkBtn').addEventListener('click', async () => {
+            const text = document.getElementById('emailText').value;
+            const resDiv = document.getElementById('checkResult');
+            const btn = document.getElementById('checkBtn');
+
+            if (!text) return;
+
+            btn.disabled = true;
+            btn.innerText = 'EXECUTING_FORENSICS...';
+
+            try {
+                const res = await fetch('/check-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.error);
+
+                resDiv.classList.remove('hidden', 'border-red-500/50', 'text-red-400', 'border-cyan-500/50', 'text-cyan-400');
+                if (data.prediction === 'phishing') {
+                    resDiv.classList.add('border-red-500/50', 'text-red-400', 'bg-red-500/10');
+                    resDiv.innerText = `CRITICAL_THREAT_DETECTED::CONFIDENCE::${data.confidence}%`;
+                } else {
+                    resDiv.classList.add('border-cyan-500/50', 'text-cyan-400', 'bg-cyan-500/10');
+                    resDiv.innerText = `INTEL_VERIFIED_SECURE::CONFIDENCE::${data.confidence}%`;
+                }
+            } catch (e) {
+                resDiv.classList.remove('hidden');
+                resDiv.classList.add('border-slate-500', 'text-slate-400');
+                resDiv.innerText = 'ANALYSIS_BREACH: ' + e.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Analyze Artifact';
+            }
+        });
+
+        // AI Assistant Chat Logic
+        const toggleChat = document.getElementById('toggleChat');
+        const chatContent = document.getElementById('chatContent');
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const sendChat = document.getElementById('sendChat');
+
+        toggleChat.addEventListener('click', () => {
+            chatContent.classList.toggle('hidden');
+            chatContent.classList.toggle('flex');
+            if (!chatContent.classList.contains('hidden')) {
+                chatInput.focus();
+            }
+        });
+
+        const addMessage = (text, type = 'ai') => {
+            const div = document.createElement('div');
+            const isAi = type === 'ai';
+            div.className = isAi
+                ? "bg-slate-900/80 p-4 rounded-2xl rounded-tl-none border border-slate-800 text-xs text-slate-300 max-w-[85%] leading-relaxed animate-in fade-in slide-in-from-left-2"
+                : "bg-cyan-500 p-4 rounded-2xl rounded-tr-none text-slate-950 text-xs font-bold max-w-[85%] leading-relaxed ml-auto animate-in fade-in slide-in-from-right-2";
+            div.innerText = text;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+
+        const handleChat = async () => {
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+
+            addMessage(msg, 'user');
+            chatInput.value = '';
+
+            try {
+                const res = await fetch('/ai-security-assistant', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg })
+                });
+                const data = await res.json();
+                addMessage(data.response, 'ai');
+            } catch (e) {
+                addMessage("Encryption Error: Failed to receive AI signal.", 'ai');
+            }
+        };
+
+        sendChat.addEventListener('click', handleChat);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleChat();
+        });
+    </script>
+</body>
+
+</html>
