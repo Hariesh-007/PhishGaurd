@@ -5,35 +5,28 @@ import joblib
 import pandas as pd
 from flask import Flask, redirect, url_for, session, request, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_talisman import Talisman
-from dotenv import load_dotenv
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 import ml_pipeline  # To use the preprocessing function
 
+import json
+from dotenv import load_dotenv
+
 # Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
-# Production security: CSP and HSTS
-Talisman(app, content_security_policy=None) # Set to None for now to ensure UI compatibility, but ideally restricted in prod
-
-app.secret_key = os.getenv('SECRET_KEY', os.urandom(24))
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
 app.config['THREADS_PER_PAGE'] = 15
-
-# Postgres compatibility fix for Railway
-database_url = os.getenv('DATABASE_URL', 'sqlite:///phishing_detector_v4.db')
-if database_url and database_url.startswith("postgres://"):
-    database_url = database_url.replace("postgres://", "postgresql://", 1)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///phishing_detector_v4.db')
+# Handle SQLAlchemy URL compatibility for certain platforms (e.g. Render/Heroku)
+if app.config['SQLALCHEMY_DATABASE_URI'].startswith("postgres://"):
+    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 # --- Database Models ---
 class User(db.Model):
@@ -73,24 +66,24 @@ def load_ml_model():
         print("ML model not found. Waiting for training to complete...")
 
 # --- OAuth2 Configuration ---
+CLIENT_SECRETS_FILE = "credentials.json"
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.modify', 'openid', 'https://www.googleapis.com/auth/userinfo.email']
 
 def get_google_flow():
-    client_config = {
-        "web": {
-            "client_id": os.getenv("GOOGLE_CLIENT_ID"),
-            "project_id": os.getenv("GOOGLE_PROJECT_ID"),
-            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-            "token_uri": "https://oauth2.googleapis.com/token",
-            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-            "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
-            "redirect_uris": [os.getenv("REDIRECT_URI", "https://localhost:5000/callback")]
-        }
-    }
-    return Flow.from_client_config(
-        client_config,
+    # Priority: Environment Variable -> Local File
+    creds_json = os.environ.get('GOOGLE_CREDENTIALS_JSON')
+    if creds_json:
+        client_config = json.loads(creds_json)
+        return Flow.from_client_config(
+            client_config,
+            scopes=SCOPES,
+            redirect_uri=url_for('callback', _external=True, _scheme='https')
+        )
+    
+    return Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE,
         scopes=SCOPES,
-        redirect_uri=os.getenv("REDIRECT_URI", "https://localhost:5000/callback")
+        redirect_uri=url_for('callback', _external=True, _scheme='https')
     )
 
 # --- Routes ---
@@ -210,6 +203,10 @@ def logs():
     page = request.args.get('page', 1, type=int)
     pagination = EmailLog.query.filter_by(user_email=session['user_email']).order_by(EmailLog.timestamp.desc()).paginate(page=page, per_page=15)
     return render_template('logs.html', pagination=pagination)
+
+@app.route('/intel-briefing')
+def intel_briefing():
+    return render_template('intel_briefing.html')
 
 @app.route('/toggle-auto-scan', methods=['POST'])
 def toggle_auto_scan():
@@ -336,7 +333,8 @@ def scan_inbox(user_email, creds_dict):
                     userId='me',
                     body={
                         'ids': [msg_info['id']],
-                        'removeLabelIds': ['UNREAD']
+                        'addLabelIds': ['SPAM'],
+                        'removeLabelIds': ['UNREAD', 'INBOX']
                     }
                 ).execute()
                 phishing_count += 1
@@ -361,68 +359,37 @@ def scan_inbox(user_email, creds_dict):
     db.session.commit()
     return {'scanned': scanned_count, 'phishing': phishing_count}
 
-from celery import Celery
-
-# Celery configuration
-def make_celery(app):
-    celery = Celery(
-        app.import_name,
-        backend=os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0'),
-        broker=os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
-    )
-    celery.conf.update(app.config)
-
-    class ContextTask(celery.Task):
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return self.run(*args, **kwargs)
-
-    celery.Task = ContextTask
-    return celery
-
-celery = make_celery(app)
-
-@celery.task
-def scan_all_users_task():
-    """Background task to scan all users with auto-scan enabled."""
-    users = User.query.filter_by(auto_scan=True).all()
-    for user in users:
-        print(f"Celery: Auto-scanning for {user.email}")
-        try:
-            scan_inbox(user.email, user.credentials)
-        except Exception as e:
-            print(f"Celery Error for {user.email}: {e}")
-
-# --- Background Worker (Legacy Fallback) ---
+# --- Background Worker ---
 def background_scanner():
-    """Fallback background thread if Celery is not running."""
     while True:
         with app.app_context():
             # Only scan for users who have auto_scan enabled
             users = User.query.filter_by(auto_scan=True).all()
             for user in users:
-                print(f"Legacy Thread: Auto-scanning for {user.email}")
+                print(f"Auto-scanning for {user.email}")
                 try:
                     scan_inbox(user.email, user.credentials)
                 except Exception as e:
                     print(f"Error auto-scanning {user.email}: {e}")
-        time.sleep(int(os.getenv('SCAN_INTERVAL', 60)))
+        time.sleep(30)  # Scan every 30 seconds for a "live" feel
 
 if __name__ == '__main__':
     load_ml_model()
-    
-    # Start background thread only if CELERY_ENABLED is not set
-    if os.getenv('CELERY_ENABLED', 'False').lower() != 'true':
-        print("Starting legacy background scanner thread...")
+    # Start background thread (can be disabled in production if running separate worker)
+    if os.environ.get('ENABLE_BACKGROUND_SCAN', 'true').lower() == 'true':
+        print("Starting background scanner thread...")
         daemon = threading.Thread(target=background_scanner, daemon=True)
         daemon.start()
-    else:
-        print("Celery is enabled. Ensure a celery worker is running.")
     
-    port = int(os.getenv('PORT', 5000))
-    debug = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
-    
-    # Adhoc SSL for local dev only
-    ssl_context = 'adhoc' if debug else None
-    
-    app.run(debug=debug, ssl_context=ssl_context, port=port, host='0.0.0.0')
+    app.run(debug=True, ssl_context='adhoc', port=5000)
+else:
+    # Logic for Gunicorn/Production
+    load_ml_model()
+    # In production, we usually want one instance of the background scanner.
+    # If Gunicorn is used with multiple workers, this thread would start in EACH worker.
+    # Recommend setting ENABLE_BACKGROUND_SCAN=false and running a separate worker process 
+    # OR using 1 worker if the load is low.
+    if os.environ.get('ENABLE_BACKGROUND_SCAN', 'true').lower() == 'true':
+        print("Starting production background scanner thread...")
+        daemon = threading.Thread(target=background_scanner, daemon=True)
+        daemon.start()

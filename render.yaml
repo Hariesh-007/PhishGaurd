@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: phishguard-ai
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --worker-class gthread --threads 4 --bind 0.0.0.0:$PORT
+    envVars:
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: GOOGLE_CREDENTIALS_JSON
+        sync: false # Set this in the Render Dashboard
+      - key: ENABLE_BACKGROUND_SCAN
+        value: true
+      - key: PYTHON_VERSION
+        value: 3.11.0

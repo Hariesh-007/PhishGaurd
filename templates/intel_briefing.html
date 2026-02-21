@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intel Briefing | PhishGuard AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #020617;
+            --accent-cyan: #22d3ee;
+            --accent-crimson: #ef4444;
+            --glass: rgba(15, 23, 42, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f8fafc;
+            background-image:
+                radial-gradient(circle at 100% 0%, rgba(34, 211, 238, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
+        }
+
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .neon-glow-cyan {
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
+        }
+
+        .code-block {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 border-r border-slate-800/50 h-screen sticky top-0 p-6 space-y-8 glass-panel z-20">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <span
+                    class="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">PhishGuard
+                    <span class="text-cyan-400 text-xs font-mono ml-1">v2.6</span></span>
+            </div>
+
+            <nav class="space-y-1">
+                <a href="/dashboard"
+                    class="flex items-center gap-3 p-3 text-slate-400 hover:bg-slate-800/50 rounded-xl transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="/intel-briefing"
+                    class="flex items-center gap-3 p-3 bg-cyan-500/10 text-cyan-400 rounded-xl font-medium border border-cyan-500/20 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Intel Briefing
+                </a>
+                <a href="/logs"
+                    class="flex items-center gap-3 p-3 text-slate-400 hover:bg-slate-800/50 rounded-xl transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    Security Logs
+                </a>
+                <a href="/logout"
+                    class="flex items-center gap-3 p-3 text-slate-400 hover:bg-red-500/10 hover:text-red-400 rounded-xl transition-all group mt-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:text-red-400 transition-colors"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Terminate Session
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-10 max-w-6xl mx-auto">
+            <header class="mb-12">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-bold tracking-widest uppercase mb-4">
+                    Intelligence_Update :: v2.6.4
+                </div>
+                <h1 class="text-5xl font-black tracking-tight mb-4">Intelligence Briefing</h1>
+                <p class="text-slate-400 text-lg leading-relaxed max-w-2xl">
+                    Technical telemetry and forensic analysis strategies implemented within the PhishGuard AI core.
+                    Understand how we suppress threats.
+                </p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <!-- Engine Specs -->
+                <div class="p-8 glass-panel rounded-3xl neon-glow-cyan">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-cyan-500/10 rounded-xl flex items-center justify-center text-cyan-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                            </svg>
+                        </div>
+                        Forensic Engine Specs
+                    </h2>
+                    <div class="space-y-6">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase tracking-widest font-bold mb-2">Model
+                                Architecture</p>
+                            <p class="text-sm text-slate-300">Random Forest Ensemble (100 Decision Trees) with
+                                specialized weights for BEC keywords.</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase tracking-widest font-bold mb-2">Feature
+                                Extraction</p>
+                            <div class="code-block p-4 rounded-2xl text-[11px] text-cyan-400 leading-relaxed">
+                                Vectorizer: TF-IDF (Term Frequency-Inverse Document Frequency)<br>
+                                Features: 1000 Top Forensic Tokens<br>
+                                N-Grams: (1, 2) Range :: Capturing context strings
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Threat Vectors -->
+                <div class="p-8 glass-panel rounded-3xl border-red-500/10">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center text-red-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        Active Threat Vectors
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                            <div class="w-2 h-2 rounded-full bg-red-500 mt-1.5 animate-pulse"></div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-200">Credential Harvesting</p>
+                                <p class="text-xs text-slate-500 mt-1">Simulated portal links and urgent verification
+                                    requests targeting SMTP/OAuth tokens.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                            <div class="w-2 h-2 rounded-full bg-orange-500 mt-1.5"></div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-200">BEC (Business Email Compromise)</p>
+                                <p class="text-xs text-slate-500 mt-1">Executive impersonation with low-frequency
+                                    linguistic anomalies undetected by standard filters.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Stats (Visualization Placeholder) -->
+            <div class="p-8 glass-panel rounded-3xl mb-12">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+                    <div>
+                        <h2 class="text-xl font-bold">Global Deflection Telemetry</h2>
+                        <p class="text-xs text-slate-500 mt-1">Aggregated data from the PhishGuard Security Network
+                            (Simulated)</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="text-center">
+                            <p class="text-2xl font-black text-cyan-400">128K</p>
+                            <p class="text-[10px] text-slate-600 uppercase font-black">Threats Blocked</p>
+                        </div>
+                        <div class="text-center border-l border-white/5 pl-4">
+                            <p class="text-2xl font-black text-white">99.8%</p>
+                            <p class="text-[10px] text-slate-600 uppercase font-black">Accuracy</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-white/5 h-32 rounded-2xl border border-white/5 flex items-end p-4">
+                        <div class="w-full bg-cyan-500/20 h-1/2 rounded-t-lg"></div>
+                    </div>
+                    <div class="bg-white/5 h-32 rounded-2xl border border-white/5 flex items-end p-4">
+                        <div class="w-full bg-cyan-500/40 h-3/4 rounded-t-lg"></div>
+                    </div>
+                    <div class="bg-white/5 h-32 rounded-2xl border border-white/5 flex items-end p-4">
+                        <div class="w-full bg-cyan-500/60 h-2/3 rounded-t-lg"></div>
+                    </div>
+                    <div class="bg-white/5 h-32 rounded-2xl border border-white/5 flex items-end p-4">
+                        <div class="w-full bg-cyan-500/80 h-full rounded-t-lg shadow-[0_0_15px_rgba(34,211,238,0.3)]">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="text-center">
+                <a href="/dashboard"
+                    class="text-cyan-400 text-xs font-bold uppercase tracking-widest hover:text-cyan-300 transition-colors flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Return to Mission Control
+                </a>
+            </footer>
+        </div>
+    </div>
+</body>
+
+</html>
